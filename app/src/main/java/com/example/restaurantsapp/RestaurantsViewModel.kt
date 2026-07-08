@@ -2,6 +2,7 @@ package com.example.restaurantsapp
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
+import kotlinx.coroutines.*
 import retrofit2.*
 import retrofit2.converter.gson.*
 
@@ -9,7 +10,11 @@ class RestaurantsViewModel(private val stateHandle: SavedStateHandle): ViewModel
     private var restInterface: RestaurantsApiService
     val state = mutableStateOf(emptyList<Restaurant>())
 
-    private lateinit var restaurantsCall: Call<List<Restaurant>>
+    private val errorHandler =
+        CoroutineExceptionHandler { _, exception ->
+            exception.printStackTrace()
+        }
+
     fun toggleFavorite(id: Int) {
         val restaurants = state.value.toMutableList()
         val itemIndex =
@@ -57,29 +62,18 @@ class RestaurantsViewModel(private val stateHandle: SavedStateHandle): ViewModel
         )
         getRestaurants()
     }
-    private fun getRestaurants() {
-        restaurantsCall = restInterface.getRestaurants()
-        restaurantsCall.enqueue(
-            object : Callback<List<Restaurant>> {
-                override fun onResponse(
-                    call: Call<List<Restaurant>>,
-                    response: Response<List<Restaurant>>
-                ) {
-                    response.body()?.let { restaurants ->
-                        state.value =
-                            restaurants.restoreSelections()
-                    }
-                }
-                override fun onFailure(
-                    call: Call<List<Restaurant>>, t: Throwable
-                ) {
-                    t.printStackTrace()
-                }
-            })
+
+    private suspend fun getRemoteRestaurants(): List<Restaurant> {
+        return withContext(Dispatchers.IO) {
+            restInterface.getRestaurants()
+        }
     }
-    override fun onCleared() {
-        super.onCleared()
-        restaurantsCall.cancel()
+
+    private fun getRestaurants() {
+        viewModelScope.launch(errorHandler) {
+            val restaurants = getRemoteRestaurants()
+            state.value = restaurants.restoreSelections()
+        }
     }
 }
 
