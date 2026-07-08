@@ -63,19 +63,6 @@ fun RestaurantItem(item: Restaurant,
 }
 
 @Composable
-private fun FavoriteIcon(icon: ImageVector,
-                         modifier: Modifier,
-                         onClick: () -> Unit) {
-    Image(
-        imageVector = icon,
-        contentDescription = "Favorite restaurant icon",
-        modifier = modifier
-            .padding(8.dp)
-            .clickable { onClick() }
-    )
-}
-
-@Composable
 private fun RestaurantIcon(
     icon: ImageVector,
     modifier: Modifier,
