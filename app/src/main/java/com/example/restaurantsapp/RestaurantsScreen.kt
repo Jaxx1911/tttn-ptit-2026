@@ -16,7 +16,7 @@ import androidx.lifecycle.viewmodel.compose.*
 import com.example.restaurantsapp.ui.theme.*
 
 @Composable
-fun RestaurantsScreen() {
+fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
     val viewModel: RestaurantsViewModel = viewModel()
 
     LazyColumn(
@@ -24,23 +24,26 @@ fun RestaurantsScreen() {
             vertical = 8.dp,
             horizontal = 8.dp)) {
             items(viewModel.state.value) { restaurant->
-                RestaurantItem(restaurant) { id ->
-                    viewModel.toggleFavorite(id)
-                }
+                RestaurantItem(
+                    restaurant,
+                    onFavoriteClick =
+                        { id -> viewModel.toggleFavorite(id) },
+                    onItemClick = { id -> onItemClick(id)})
             }
     }
 }
 
 @Composable
 fun RestaurantItem(item: Restaurant,
-                   onClick: (id: Int) -> Unit) {
+                   onFavoriteClick: (id: Int) -> Unit,
+                   onItemClick: (id: Int) -> Unit) {
     val icon = if (item.isFavorite)
         Icons.Filled.Favorite
     else
         Icons.Filled.FavoriteBorder
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(8.dp).clickable { onItemClick(item.id) },
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -56,14 +59,14 @@ fun RestaurantItem(item: Restaurant,
                 Modifier.weight(0.7f)
             )
             RestaurantIcon(icon, Modifier.weight(0.15f)) {
-                onClick(item.id)
+                onFavoriteClick(item.id)
             }
         }
     }
 }
 
 @Composable
-private fun RestaurantIcon(
+public fun RestaurantIcon(
     icon: ImageVector,
     modifier: Modifier,
     onClick: () -> Unit = { }
@@ -76,8 +79,12 @@ private fun RestaurantIcon(
 }
 
 @Composable
-private fun RestaurantDetails(title: String, description: String, modifier: Modifier) {
-    Column(modifier = modifier) {
+public fun RestaurantDetails(title: String,
+                              description: String,
+                              modifier: Modifier,
+                              horizontalAlignment: Alignment.Horizontal = Alignment.Start) {
+    Column(modifier = modifier,
+        horizontalAlignment = horizontalAlignment) {
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge
