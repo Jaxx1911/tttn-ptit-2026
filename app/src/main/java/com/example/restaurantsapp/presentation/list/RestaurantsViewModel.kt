@@ -3,11 +3,15 @@ package com.example.restaurantsapp.presentation.list
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
 import com.example.restaurantsapp.domain.*
+import dagger.hilt.android.lifecycle.*
 import kotlinx.coroutines.*
+import javax.inject.*
 
-class RestaurantsViewModel(): ViewModel() {
-    private val getRestaurantsUseCase = GetInitialRestaurantsUseCase()
-    private val toggleRestaurantsUseCase = ToggleRestaurantUseCase()
+@HiltViewModel
+class RestaurantsViewModel @Inject constructor(
+    private val getRestaurantsUseCase: GetInitialRestaurantsUseCase,
+    private val toggleRestaurantsUseCase: ToggleRestaurantUseCase,
+): ViewModel() {
     private val _state = mutableStateOf(
         RestaurantsScreenState(
             restaurants = listOf(),

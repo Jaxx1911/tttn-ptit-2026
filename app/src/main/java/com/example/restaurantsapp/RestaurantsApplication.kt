@@ -1,13 +1,7 @@
 package com.example.restaurantsapp
 
 import android.app.*
-import android.content.*
+import dagger.hilt.android.*
 
-class RestaurantsApplication: Application() {
-    init { app = this }
-    companion object {
-        private lateinit var app: RestaurantsApplication
-        fun getAppContext(): Context =
-            app.applicationContext
-    }
-}
+@HiltAndroidApp
+class RestaurantsApplication: Application()

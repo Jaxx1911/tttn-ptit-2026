@@ -4,13 +4,15 @@ import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.compose.runtime.*
-import androidx.lifecycle.viewmodel.compose.*
+import androidx.hilt.navigation.compose.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.example.restaurantsapp.presentation.details.*
 import com.example.restaurantsapp.presentation.list.*
 import com.example.restaurantsapp.ui.theme.*
+import dagger.hilt.android.*
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ private fun RestaurantsApp() {
     ) {
         composable(route = "restaurants") {
             val viewModel: RestaurantsViewModel =
-                viewModel()
+                hiltViewModel()
             RestaurantsScreen(
                 state = viewModel.state.value,
                 onItemClick = { id ->

@@ -1,28 +1,20 @@
 package com.example.restaurantsapp.data
 
-import com.example.restaurantsapp.*
 import com.example.restaurantsapp.data.local.*
 import com.example.restaurantsapp.data.remote.*
-import com.example.restaurantsapp.domain.Restaurant
+import com.example.restaurantsapp.domain.*
 import kotlinx.coroutines.*
 import retrofit2.*
-import retrofit2.converter.gson.*
 import java.net.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RestaurantsRepository {
-    private var restInterface: RestaurantsApiService = Retrofit.Builder()
-        .addConverterFactory(
-            GsonConverterFactory.create()
-        )
-        .baseUrl(
-            "https://restaurants-app-demo-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        )
-        .build().create(RestaurantsApiService::class.java)
-
-    private var restaurantsDao = RestaurantsDb.getDaoInstance(
-        RestaurantsApplication.getAppContext()
-    )
-    suspend fun toggleFavoriteRestaurant(id: Int, value: Boolean) =
+@Singleton
+class RestaurantsRepository @Inject constructor(
+    private val restInterface: RestaurantsApiService,
+    private val restaurantsDao: RestaurantsDao
+) {
+        suspend fun toggleFavoriteRestaurant(id: Int, value: Boolean) =
         withContext(Dispatchers.IO) {
             restaurantsDao.update(
                 PartialLocalRestaurant(
