@@ -18,18 +18,25 @@ import com.example.restaurantsapp.ui.theme.*
 @Composable
 fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
     val viewModel: RestaurantsViewModel = viewModel()
-
-    LazyColumn(
-        contentPadding = PaddingValues(
-            vertical = 8.dp,
-            horizontal = 8.dp)) {
-            items(viewModel.state.value) { restaurant->
+    val state = viewModel.state.value
+    Box(contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            contentPadding = PaddingValues(
+                vertical = 8.dp,
+                horizontal = 8.dp)) {
+            items(state.restaurants) { restaurant ->
                 RestaurantItem(
                     restaurant,
                     onFavoriteClick =
                         { id, oldValue -> viewModel.toggleFavorite(id, oldValue) },
                     onItemClick = { id -> onItemClick(id)})
             }
+        }
+        if(state.isLoading)
+            CircularProgressIndicator()
+        if (state.error != null)
+            Text(state.error)
     }
 }
 
