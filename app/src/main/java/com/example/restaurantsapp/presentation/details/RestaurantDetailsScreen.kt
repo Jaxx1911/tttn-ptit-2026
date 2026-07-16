@@ -1,4 +1,4 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.presentation.details
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.*
+import com.example.restaurantsapp.presentation.list.*
 
 @Composable
 fun RestaurantDetailsScreen() {
@@ -32,7 +33,8 @@ fun RestaurantDetailsScreen() {
                 item.title,
                 item.description,
                 Modifier.padding(bottom = 32.dp),
-                Alignment.CenterHorizontally)
+                Alignment.CenterHorizontally
+            )
             Text("More info coming soon!")
         }
     }

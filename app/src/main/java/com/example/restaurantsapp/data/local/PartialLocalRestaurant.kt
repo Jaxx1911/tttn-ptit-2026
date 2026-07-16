@@ -1,9 +1,9 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.data.local
 
 import androidx.room.*
 
 @Entity
-class PartialRestaurant(
+class PartialLocalRestaurant(
     @ColumnInfo(name = "r_id")
     val id: Int,
     @ColumnInfo(name = "is_favorite")

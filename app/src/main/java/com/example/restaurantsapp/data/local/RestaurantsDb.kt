@@ -1,11 +1,11 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.data.local
 
 import android.content.*
 import androidx.room.*
 
 @Database(
-    entities = [Restaurant::class],
-    version = 2,
+    entities = [LocalRestaurant::class],
+    version = 3,
     exportSchema = false)
 abstract class RestaurantsDb : RoomDatabase() {
     abstract val dao: RestaurantsDao

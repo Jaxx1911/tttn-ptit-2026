@@ -1,15 +1,18 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.presentation.list
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
+import com.example.restaurantsapp.domain.*
 import kotlinx.coroutines.*
 
 class RestaurantsViewModel(): ViewModel() {
-    private val repository = RestaurantsRepository()
+    private val getRestaurantsUseCase = GetInitialRestaurantsUseCase()
+    private val toggleRestaurantsUseCase = ToggleRestaurantUseCase()
     private val _state = mutableStateOf(
         RestaurantsScreenState(
             restaurants = listOf(),
-            isLoading = true)
+            isLoading = true
+        )
     )
     val state: State<RestaurantsScreenState>
         get() = _state
@@ -26,7 +29,7 @@ class RestaurantsViewModel(): ViewModel() {
     fun toggleFavorite(id: Int, oldValue: Boolean) {
         viewModelScope.launch(errorHandler) {
             val updatedRestaurants =
-                repository.toggleFavoriteRestaurant(id, oldValue)
+                toggleRestaurantsUseCase(id, oldValue)
             _state.value = _state.value.copy(
                 restaurants = updatedRestaurants)
         }
@@ -39,7 +42,7 @@ class RestaurantsViewModel(): ViewModel() {
 
     private fun getRestaurants() {
         viewModelScope.launch(errorHandler) {
-            val restaurants = repository.getAllRestaurants()
+            val restaurants = getRestaurantsUseCase()
             _state.value = _state.value.copy(
                 restaurants = restaurants,
                 isLoading = false)

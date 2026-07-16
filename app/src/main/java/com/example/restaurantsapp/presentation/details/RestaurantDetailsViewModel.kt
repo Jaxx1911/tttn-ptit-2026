@@ -1,7 +1,9 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.presentation.details
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.*
+import com.example.restaurantsapp.data.remote.*
+import com.example.restaurantsapp.domain.*
 import kotlinx.coroutines.*
 import retrofit2.*
 import retrofit2.converter.gson.*
@@ -30,7 +32,13 @@ class RestaurantDetailsViewModel(private val stateHandle: SavedStateHandle): Vie
         return withContext(Dispatchers.IO) {
             val responseMap = restInterface
                 .getRestaurant(id)
-            return@withContext responseMap.values.first()
+            return@withContext responseMap.values.first().let {
+                Restaurant(
+                    id = it.id,
+                    title = it.title,
+                    description = it.description
+                )
+            }
         }
     }
 }

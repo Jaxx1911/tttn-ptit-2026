@@ -1,11 +1,14 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.presentation
 
 import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.example.restaurantsapp.presentation.details.*
+import com.example.restaurantsapp.presentation.list.*
 import com.example.restaurantsapp.ui.theme.*
 
 class MainActivity : ComponentActivity() {
@@ -28,9 +31,17 @@ private fun RestaurantsApp() {
         startDestination = "restaurants"
     ) {
         composable(route = "restaurants") {
-            RestaurantsScreen { id ->
-                navController.navigate("restaurants/$id")
-            }
+            val viewModel: RestaurantsViewModel =
+                viewModel()
+            RestaurantsScreen(
+                state = viewModel.state.value,
+                onItemClick = { id ->
+                    navController
+                        .navigate("restaurants/$id")
+                },
+                onFavoriteClick = { id, oldValue ->
+                    viewModel.toggleFavorite(id, oldValue)
+                })
         }
         composable(route = "restaurants/{restaurant_id}",
             arguments =

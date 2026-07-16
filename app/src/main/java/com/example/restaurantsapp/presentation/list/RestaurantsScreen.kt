@@ -1,4 +1,4 @@
-package com.example.restaurantsapp
+package com.example.restaurantsapp.presentation.list
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -12,13 +12,15 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import androidx.lifecycle.viewmodel.compose.*
+import com.example.restaurantsapp.domain.*
 import com.example.restaurantsapp.ui.theme.*
 
 @Composable
-fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
-    val viewModel: RestaurantsViewModel = viewModel()
-    val state = viewModel.state.value
+fun RestaurantsScreen(
+    state: RestaurantsScreenState,
+    onItemClick: (id: Int) -> Unit = {},
+    onFavoriteClick: (id: Int, oldValue: Boolean) -> Unit
+) {
     Box(contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -29,7 +31,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
                 RestaurantItem(
                     restaurant,
                     onFavoriteClick =
-                        { id, oldValue -> viewModel.toggleFavorite(id, oldValue) },
+                        { id, oldValue -> onFavoriteClick(id, oldValue) },
                     onItemClick = { id -> onItemClick(id)})
             }
         }
@@ -112,6 +114,10 @@ public fun RestaurantDetails(title: String,
 @Composable
 fun DefaultPreview() {
     RestaurantsAppTheme {
-        RestaurantsScreen()
+        RestaurantsScreen(
+            state = RestaurantsScreenState(listOf(), true),
+            onItemClick = {},
+            onFavoriteClick = { _, _ -> }
+        )
     }
 }
