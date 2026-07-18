@@ -1,21 +1,22 @@
 package com.example.restaurantsapp.data
 
+import com.example.restaurantsapp.data.di.*
 import com.example.restaurantsapp.data.local.*
 import com.example.restaurantsapp.data.remote.*
 import com.example.restaurantsapp.domain.*
 import kotlinx.coroutines.*
 import retrofit2.*
 import java.net.*
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.*
 
 @Singleton
 class RestaurantsRepository @Inject constructor(
     private val restInterface: RestaurantsApiService,
-    private val restaurantsDao: RestaurantsDao
+    private val restaurantsDao: RestaurantsDao,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) {
         suspend fun toggleFavoriteRestaurant(id: Int, value: Boolean) =
-        withContext(Dispatchers.IO) {
+        withContext(dispatcher) {
             restaurantsDao.update(
                 PartialLocalRestaurant(
                     id = id,
@@ -25,7 +26,7 @@ class RestaurantsRepository @Inject constructor(
         }
 
     suspend fun loadRestaurants() {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 refreshCache()
             } catch (e: Exception) {
@@ -66,7 +67,7 @@ class RestaurantsRepository @Inject constructor(
     }
 
     suspend fun getRestaurants() : List<Restaurant> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             return@withContext restaurantsDao.getAll().map {
                 Restaurant(
                     it.id, it.title,

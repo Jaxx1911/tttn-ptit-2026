@@ -10,9 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.*
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import com.example.restaurantsapp.domain.*
+import com.example.restaurantsapp.presentation.*
 import com.example.restaurantsapp.ui.theme.*
 
 @Composable
@@ -36,7 +38,11 @@ fun RestaurantsScreen(
             }
         }
         if(state.isLoading)
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                Modifier.semantics {
+                    this.contentDescription =
+                        Description.RESTAURANTS_LOADING
+                })
         if (state.error != null)
             Text(state.error)
     }
